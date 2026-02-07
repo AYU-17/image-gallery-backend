@@ -51,15 +51,19 @@ export const loginAdmin = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRE }
     );
 
+    const isProduction = process.env.NODE_ENV === 'production';
+    
     res.cookie('adminToken', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      secure: isProduction, 
+      sameSite: isProduction ? 'none' : 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, 
+      path: '/'
     });
 
     res.status(200).json({
-      message: "Login successful"
+      message: "Login successful",
+      token 
     });
 
   } catch (error) {
